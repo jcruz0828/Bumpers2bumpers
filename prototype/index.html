@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bumpers2Bumpers — Mobile Detail · Coachella Valley · Since 1998</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="f-editorial" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<link id="f-grotesk" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<link id="f-condensed" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<link id="f-wide" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="components-core.jsx"></script>
+<script type="text/babel" src="components-sections.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "gold",
+  "typography": "condensed",
+  "hero": "default",
+  "motion": 10,
+  "bg": "warm",
+  "density": "comfy",
+  "heroImage": 2
+}/*EDITMODE-END*/;
+
+const ACCENTS = {
+  platinum:  { color:"#d6d3cc", ink:"#0a0a0a", name:"Platinum" },
+  gold:      { color:"#c9a961", ink:"#0a0a0a", name:"Gold" },
+  champagne: { color:"#e4d4b4", ink:"#0a0a0a", name:"Champagne" },
+  ice:       { color:"#dbe7ee", ink:"#0a0a0a", name:"Ice" },
+  copper:    { color:"#c88a5e", ink:"#0a0a0a", name:"Copper" },
+};
+const TYPES = {
+  editorial: { display:'"Cormorant Garamond", serif', body:'"Inter", sans-serif', name:"Editorial" },
+  grotesk:   { display:'"Space Grotesk", sans-serif',  body:'"Inter", sans-serif', name:"Grotesk" },
+  condensed: { display:'"Bodoni Moda", serif',         body:'"Inter", sans-serif', name:"Bodoni" },
+  wide:      { display:'"Big Shoulders Display", sans-serif', body:'"Inter", sans-serif', name:"Big Shoulders" },
+};
+const BGS = {
+  black:     { bg:"#0a0a0a", bg2:"#101010", bg3:"#151515", name:"Obsidian" },
+  carbon:    { bg:"#070707", bg2:"#0c0c0c", bg3:"#121212", name:"Carbon" },
+  warm:      { bg:"#0e0b08", bg2:"#15110c", bg3:"#1a140f", name:"Oil" },
+};
+
+function App(){
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  useReveal();
+
+  // apply CSS vars
+  useEffect(()=>{
+    const r = document.documentElement.style;
+    const a = ACCENTS[t.accent] || ACCENTS.platinum;
+    r.setProperty('--accent', a.color);
+    r.setProperty('--accent-ink', a.ink);
+    r.setProperty('--accent-2', a.color + '26');
+
+    const f = TYPES[t.typography] || TYPES.editorial;
+    r.setProperty('--f-display', f.display);
+    r.setProperty('--f-body', f.body);
+
+    const b = BGS[t.bg] || BGS.black;
+    r.setProperty('--bg', b.bg);
+    r.setProperty('--bg-2', b.bg2);
+    r.setProperty('--bg-3', b.bg3);
+
+    document.body.dataset.density = t.density;
+  }, [t.accent, t.typography, t.bg, t.density]);
+
+  const heroImg = window.B2B_DATA.heros[t.heroImage % window.B2B_DATA.heros.length];
+
+  return (
+    <>
+      <Nav />
+      <Hero variant={t.hero} heroImg={heroImg} motion={t.motion} />
+      <Marquee />
+      <Services />
+      <BeforeAfterSection />
+      <Since />
+      <USP />
+      <Gallery />
+      <Testimonials />
+      <Book />
+      <Foot />
+
+      <TweaksPanel>
+        <TweakSection label="Accent" />
+        <TweakRadio value={t.accent}
+          options={[
+            {value:'platinum',label:'Platinum'},
+            {value:'gold',label:'Gold'},
+            {value:'champagne',label:'Champ.'},
+            {value:'ice',label:'Ice'},
+            {value:'copper',label:'Copper'},
+          ]}
+          onChange={v=>setTweak('accent', v)} />
+
+        <TweakSection label="Typography" />
+        <TweakRadio value={t.typography}
+          options={[
+            {value:'editorial',label:'Cormorant'},
+            {value:'grotesk',label:'Grotesk'},
+            {value:'condensed',label:'Bodoni'},
+            {value:'wide',label:'Big S.'},
+          ]}
+          onChange={v=>setTweak('typography', v)} />
+
+        <TweakSection label="Background" />
+        <TweakRadio value={t.bg}
+          options={[
+            {value:'black',label:'Obsidian'},
+            {value:'carbon',label:'Carbon'},
+            {value:'warm',label:'Oil'},
+          ]}
+          onChange={v=>setTweak('bg', v)} />
+
+        <TweakSection label="Hero variant" />
+        <TweakRadio value={t.hero}
+          options={[
+            {value:'default',label:'Standard'},
+            {value:'split',label:'Split'},
+            {value:'letterbox',label:'Letterbox'},
+            {value:'parallax',label:'Parallax'},
+          ]}
+          onChange={v=>setTweak('hero', v)} />
+        <TweakSelect label="Hero imagery"
+          value={String(t.heroImage)}
+          options={[
+            {value:'0',label:'Garage'},
+            {value:'1',label:'Studio'},
+            {value:'2',label:'Showroom'},
+          ]}
+          onChange={v=>setTweak('heroImage', Number(v))} />
+
+        <TweakSection label="Motion & Layout" />
+        <TweakSlider label="Motion intensity" value={t.motion} min={1} max={10}
+          onChange={v=>setTweak('motion', v)} />
+        <TweakRadio label="Density" value={t.density}
+          options={['tight','regular','comfy']}
+          onChange={v=>setTweak('density', v)} />
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+</script>
+
+<script type="application/json" id="speaker-notes">[]</script>
+</body>
+</html>
