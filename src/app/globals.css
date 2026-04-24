@@ -326,13 +326,6 @@ html.lenis, html.lenis body { height: auto; }
   transform: translateY(0);
   pointer-events: auto;
 }
-.nav-drawer-brand {
-  font-family: var(--f-display);
-  font-size: clamp(18px, 5vw, 24px);
-  letter-spacing: 0.04em;
-  color: var(--color-fg);
-  margin-bottom: 32px;
-}
 .nav-drawer ul {
   list-style: none;
   margin: 0;
@@ -2735,7 +2728,20 @@ html.lenis, html.lenis body { height: auto; }
 
   .since-body p:first-child::first-letter { font-size: 3.5em; }
 
-  .nav .brand .name { display: none; }
+  .nav {
+    padding: 0 16px;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
+  }
+  .nav > .brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .nav .brand .name { display: inline; }
+  .nav > nav,
+  .nav > .nav-phone,
+  .nav > .cta { display: none; }
+  .nav > .menu-btn { grid-column: 2; grid-row: 1; display: flex; border-radius: 0; border: none; margin-left: auto; padding-right: 4px; }
 
   .nav-drawer .cta {
     align-self: stretch;

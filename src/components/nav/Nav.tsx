@@ -101,7 +101,6 @@ export function Nav() {
         className={cn("nav-drawer", drawer && "is-open")}
         aria-hidden={!drawer}
       >
-        <div className="nav-drawer-brand">{BRAND.shortName}</div>
         <ul>
           {NAV_LINKS.map((l, i) => (
             <li key={l.href}>
